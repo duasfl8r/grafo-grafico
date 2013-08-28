@@ -1,3 +1,5 @@
+import random
+
 class Graph:
     def __init__(self, groups):
         self.groups = groups
@@ -12,7 +14,7 @@ class Node:
         self.links = set()
 
     def __hash__(self):
-        return hash((self.name, tuple(self.links)))
+        return hash(self.name)
 
     def link(self, node):
         self.links.add(node)
@@ -39,13 +41,25 @@ if __name__ == '__main__':
         "4": Node("4"),
     }
 
-    nodes["1"].link(nodes["2"])
-    nodes["1"].link(nodes["4"])
-    nodes["2"].link(nodes["3"])
-    nodes["4"].link(nodes["3"])
+    nodes = []
+    for n in range(100):
+        nodes.append(Node(str(n)))
+
+    def random_different_node(nodes, not_this):
+        assert len(nodes) > 1
+        while True:
+            trial = random.choice(nodes)
+            if trial != not_this:
+                return trial
+
+    for node in nodes:
+        number_of_links = round(random.gauss(5, 3))
+        for i in range(number_of_links):
+            linked_node = random_different_node(nodes, node)
+            node.link(linked_node)
 
     graph = Graph(groups=[
-            Group(nodes.values()),
+            Group(nodes),
         ]
     )
 
