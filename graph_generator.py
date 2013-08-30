@@ -1,4 +1,5 @@
 import random
+from settings import get_setting as S
 
 class Graph:
     def __init__(self, groups):
@@ -37,6 +38,7 @@ class Node:
 
     def graphviz(self):
         def links_generator():
+            yield '{0} [label=""]'.format(self.name)
             for linked_node in self.links:
                 yield '{0} -- {1}'.format(self.name, linked_node.name)
 
@@ -62,9 +64,9 @@ if __name__ == '__main__':
                 return trial
 
     groups = []
-    for g in range(10):
+    for g in range(S('graph.number_of_groups')):
         nodes = []
-        for n in range(30):
+        for n in range(S('group.number_of_nodes')):
             name = 'n{0}x{1}'.format(g, n)
             nodes.append(Node(name))
 
@@ -73,15 +75,15 @@ if __name__ == '__main__':
     # Ligações intra-grupos
     for group in groups:
         for node in group.nodes:
-            number_of_links = round(random.gauss(5, 3))
+            number_of_links = S('group.intralinks_per_node')
             for i in range(number_of_links):
                 linked_node = random_different_element(group.nodes, node)
                 node.link(linked_node)
 
     for group in groups:
-        for i in range(3):
+        for i in range(S('group.nodes_with_extralinks')):
             node = random.choice(group.nodes)
-            number_of_links = round(random.gauss(0.5, 1))
+            number_of_links = S('group.extralinks_per_node')
             for i in range(number_of_links):
                 other_group = random_different_element(groups, group)
                 linked_node = random.choice(other_group.nodes)
