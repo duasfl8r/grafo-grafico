@@ -5,20 +5,21 @@ class Graph:
         self.groups = groups
 
     def graphviz(self):
-        content = "\n".join(group.graphviz() for group in self.groups)
+        content = '\n'.join(group.graphviz() for group in self.groups)
         options = {
-                "overlap": "false",
-                "outputorder": "edgesfirst"
+                'overlap': 'false',
+                'outputorder': 'edgesfirst'
         }
 
         node_options = {
-                "style": "filled"
+                'style': 'filled',
+                'regular': 'true',
         }
 
-        options_str = "\n".join('{0}={1}'.format(k, v) for k, v in options.items())
-        node_options_content_str = ",".join('{0}={1}'.format(k, v) for k, v in node_
-        node_options_str = "node[{0}]".format(node_options_content_str)
-        return "graph G {\n" + "\n" + node_options_str + "\n" + options_str + "\n" +
+        options_str = '\n'.join('{0}={1}'.format(k, v) for k, v in options.items())
+        node_options_content_str = ','.join('{0}={1}'.format(k, v) for k, v in node_options.items())
+        node_options_str = 'node[{0}]'.format(node_options_content_str)
+        return 'graph G {\n' + '\n' + node_options_str + '\n' + options_str + '\n' + content + '\n}'
 
 class Node:
     def __init__(self, name):
@@ -26,7 +27,7 @@ class Node:
         self.links = set()
 
     def __str__(self):
-        return "{0} ({1})".format(self.name, len(self.links))
+        return '{0} ({1})'.format(self.name, len(self.links))
 
     def __hash__(self):
         return hash(self.name)
@@ -37,19 +38,19 @@ class Node:
     def graphviz(self):
         def links_generator():
             for linked_node in self.links:
-                yield "{0} -- {1}".format(self.name, linked_node.name)
+                yield '{0} -- {1}'.format(self.name, linked_node.name)
 
-        return "\n".join(list(links_generator()))
+        return '\n'.join(list(links_generator()))
 
 class Group:
     def __init__(self, nodes):
         self.nodes = nodes
 
     def __str__(self):
-        return "<Group: {0}>".format(", ".join(str(n) for n in self.nodes))
+        return '<Group: {0}>'.format(', '.join(str(n) for n in self.nodes))
 
     def graphviz(self):
-        return "\n".join(node.graphviz() for node in self.nodes)
+        return '\n'.join(node.graphviz() for node in self.nodes)
 
 if __name__ == '__main__':
 
@@ -64,7 +65,7 @@ if __name__ == '__main__':
     for g in range(10):
         nodes = []
         for n in range(30):
-            name = "n{0}x{1}".format(g, n)
+            name = 'n{0}x{1}'.format(g, n)
             nodes.append(Node(name))
 
         groups.append(Group(nodes)),
