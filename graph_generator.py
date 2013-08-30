@@ -6,7 +6,19 @@ class Graph:
 
     def graphviz(self):
         content = "\n".join(group.graphviz() for group in self.groups)
-        return "graph G {\n" + content + "\n}"
+        options = {
+                "overlap": "false",
+                "outputorder": "edgesfirst"
+        }
+
+        node_options = {
+                "style": "filled"
+        }
+
+        options_str = "\n".join('{0}={1}'.format(k, v) for k, v in options.items())
+        node_options_content_str = ",".join('{0}={1}'.format(k, v) for k, v in node_
+        node_options_str = "node[{0}]".format(node_options_content_str)
+        return "graph G {\n" + "\n" + node_options_str + "\n" + options_str + "\n" +
 
 class Node:
     def __init__(self, name):
