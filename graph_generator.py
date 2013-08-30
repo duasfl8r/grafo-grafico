@@ -52,33 +52,41 @@ class Group:
         return "\n".join(node.graphviz() for node in self.nodes)
 
 if __name__ == '__main__':
-    nodes = {
-        "1": Node("1"),
-        "2": Node("2"),
-        "3": Node("3"),
-        "4": Node("4"),
-    }
 
-    nodes = []
-    for n in range(100):
-        nodes.append(Node(str(n)))
-
-    def random_different_node(nodes, not_this):
-        assert len(nodes) > 1
+    def random_different_element(seq, not_this):
+        assert len(seq) > 1
         while True:
-            trial = random.choice(nodes)
+            trial = random.choice(seq)
             if trial != not_this:
                 return trial
 
-    for node in nodes:
-        number_of_links = round(random.gauss(5, 3))
-        for i in range(number_of_links):
-            linked_node = random_different_node(nodes, node)
-            node.link(linked_node)
+    groups = []
+    for g in range(10):
+        nodes = []
+        for n in range(30):
+            name = "n{0}x{1}".format(g, n)
+            nodes.append(Node(name))
 
-    graph = Graph(groups=[
-            Group(nodes),
-        ]
-    )
+        groups.append(Group(nodes)),
+
+    # Ligações intra-grupos
+    for group in groups:
+        for node in group.nodes:
+            number_of_links = round(random.gauss(5, 3))
+            for i in range(number_of_links):
+                linked_node = random_different_element(group.nodes, node)
+                node.link(linked_node)
+
+    for group in groups:
+        for i in range(3):
+            node = random.choice(group.nodes)
+            number_of_links = round(random.gauss(0.5, 1))
+            for i in range(number_of_links):
+                other_group = random_different_element(groups, group)
+                linked_node = random.choice(other_group.nodes)
+                node.link(linked_node)
+    #print("\n".join(str(g) for g in groups))
+
+    graph = Graph(groups)
 
     print(graph.graphviz())
