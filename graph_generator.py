@@ -13,6 +13,9 @@ class Node:
         self.name = name
         self.links = set()
 
+    def __str__(self):
+        return "{0} ({1})".format(self.name, len(self.links))
+
     def __hash__(self):
         return hash(self.name)
 
@@ -29,6 +32,9 @@ class Node:
 class Group:
     def __init__(self, nodes):
         self.nodes = nodes
+
+    def __str__(self):
+        return "<Group: {0}>".format(", ".join(str(n) for n in self.nodes))
 
     def graphviz(self):
         return "\n".join(node.graphviz() for node in self.nodes)
