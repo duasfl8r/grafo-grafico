@@ -86,7 +86,6 @@ if __name__ == '__main__':
                 other_group = random_different_element(groups, group)
                 linked_node = random.choice(other_group.nodes)
                 node.link(linked_node)
-    #print("\n".join(str(g) for g in groups))
 
     graph = Graph(groups)
 
