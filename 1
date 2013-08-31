@@ -2,25 +2,25 @@ import random
 from settings import get_setting as S
 
 class Graph:
-    def __init__(self):
-        self.nodes = set()
-        self.graph_options = {}
-        self.node_options = {}
+    def __init__(self, groups):
+        self.groups = groups
 
     def graphviz(self):
-        content = '\n'.join(node.graphviz() for node in self.nodes)
+        content = '\n'.join(group.graphviz() for group in self.groups)
+        options = {
+                'overlap': 'false',
+                'outputorder': 'edgesfirst'
+        }
 
-        graph_option_tuples = [(k, v) for k, v in self.graph_options.items()]
-        graph_option_strs = ['{0}={1}'.format(k, v) for k, v in graph_option_tuples]
+        node_options = {
+                'style': 'filled',
+                'regular': 'true',
+        }
 
-        node_option_tuples = [(k, v) for k, v in self.node_options.items()]
-        node_option_strs = ['node[{0}={1}]'.format(k, v) for k, v in node_option_tuples]
-
-        return 'graph G {\n' + \
-            '\n'.join(graph_option_strs) + '\n' + \
-            '\n'.join(node_option_strs) + '\n' + \
-            content + '\n' + \
-        '}'
+        options_str = '\n'.join('{0}={1}'.format(k, v) for k, v in options.items())
+        node_options_content_str = ','.join('{0}={1}'.format(k, v) for k, v in node_options.items())
+        node_options_str = 'node[{0}]'.format(node_options_content_str)
+        return 'graph G {\n' + '\n' + node_options_str + '\n' + options_str + '\n' + content + '\n}'
 
 class Node:
     def __init__(self, name):
@@ -60,33 +60,25 @@ if __name__ == '__main__':
             name = 'n{0}x{1}'.format(g, n)
             nodes.append(Node(name))
 
-        groups.append(nodes),
+        groups.append([nodes]),
 
     # Ligações intra-grupos
     for group in groups:
-        for node in group:
+        for node in group.nodes:
             number_of_links = S('group.intralinks_per_node')
             for i in range(number_of_links):
-                linked_node = random_different_element(group, node)
+                linked_node = random_different_element(group.nodes, node)
                 node.link(linked_node)
 
     for group in groups:
         for i in range(S('group.nodes_with_extralinks')):
-            node = random.choice(group)
+            node = random.choice(group.nodes)
             number_of_links = S('group.extralinks_per_node')
             for i in range(number_of_links):
                 other_group = random_different_element(groups, group)
-                linked_node = random.choice(other_group)
+                linked_node = random.choice(other_group.nodes)
                 node.link(linked_node)
 
-    graph = Graph()
-    graph.graph_options['overlap'] = 'false'
-    graph.graph_options['outputorder'] = 'edgesfirst'
-    graph.node_options['style'] = 'filled'
-    graph.node_options['regular'] = 'true'
-
-    for group in groups:
-        for node in group:
-            graph.nodes.add(node)
+    graph = Graph(groups)
 
     print(graph.graphviz())
