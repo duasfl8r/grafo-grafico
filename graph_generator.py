@@ -26,6 +26,7 @@ class Node:
     def __init__(self, name):
         self.name = name
         self.links = set()
+        self.options = {}
 
     def __str__(self):
         return '{0} ({1})'.format(self.name, len(self.links))
@@ -38,38 +39,30 @@ class Node:
 
     def graphviz(self):
         def links_generator():
-            yield '{0} [label=""]'.format(self.name)
+            option_tuples = [(k, v) for k, v in self.options.items()]
+            option_strs = ['{0}={1}'.format(k, v) for k, v in option_tuples]
+
+            yield '{0} [{1}]'.format(self.name, ','.join(option_strs))
             for linked_node in self.links:
                 yield '{0} -- {1}'.format(self.name, linked_node.name)
 
         return '\n'.join(list(links_generator()))
 
-if __name__ == '__main__':
+def random_different_element(seq, not_this):
+    assert len(seq) > 1
+    while True:
+        trial = random.choice(seq)
+        if trial != not_this:
+            return trial
 
-    def random_different_element(seq, not_this):
-        assert len(seq) > 1
-        while True:
-            trial = random.choice(seq)
-            if trial != not_this:
-                return trial
+def make_intragroup_links(nodes):
+    for node in nodes:
+        number_of_links = S('group.intralinks_per_node')
+        for i in range(number_of_links):
+            linked_node = random_different_element(group, node)
+            node.link(linked_node)
 
-    groups = []
-    for g in range(S('graph.number_of_groups')):
-        nodes = []
-        for n in range(S('group.number_of_nodes')):
-            name = 'n{0}x{1}'.format(g, n)
-            nodes.append(Node(name))
-
-        groups.append(nodes),
-
-    # Ligações intra-grupos
-    for group in groups:
-        for node in group:
-            number_of_links = S('group.intralinks_per_node')
-            for i in range(number_of_links):
-                linked_node = random_different_element(group, node)
-                node.link(linked_node)
-
+def make_intergroup_links(groups):
     for group in groups:
         for i in range(S('group.nodes_with_extralinks')):
             node = random.choice(group)
@@ -79,11 +72,32 @@ if __name__ == '__main__':
                 linked_node = random.choice(other_group)
                 node.link(linked_node)
 
+if __name__ == '__main__':
+    groups = []
+    for i, group_settings in enumerate(S('groups')):
+        nodes = []
+        for n in range(S('group.number_of_nodes')):
+            name = 'g{0}_n{1}'.format(i, n)
+            node = Node(name)
+            node.options['label'] = '""'
+
+            basecolor_rgb_dec = S('basecolor', group_settings)
+            basecolor_rgb_hex = ['{:0<2}'.format(hex(v)[2:]) for v in basecolor_rgb_dec]
+            basecolor_rgb = '#' + ''.join(basecolor_rgb_hex)
+            node.options['fillcolor'] = '"{0}"'.format(basecolor_rgb)
+
+            nodes.append(node)
+
+        groups.append(nodes),
+
+    for group in groups:
+        make_intragroup_links(group)
+
+    make_intergroup_links(groups)
+
     graph = Graph()
-    graph.graph_options['overlap'] = 'false'
-    graph.graph_options['outputorder'] = 'edgesfirst'
-    graph.node_options['style'] = 'filled'
-    graph.node_options['regular'] = 'true'
+    graph.graph_options.update(S('graphviz.graph'))
+    graph.node_options.update(S('graphviz.node'))
 
     for group in groups:
         for node in group:
