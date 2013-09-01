@@ -1,4 +1,6 @@
 import random
+import colorsys
+
 from settings import get_setting as S
 
 class Graph:
@@ -72,6 +74,15 @@ def make_intergroup_links(groups):
                 linked_node = random.choice(other_group)
                 node.link(linked_node)
 
+def hsv_color_variant(hsv_color, brightness_offset):
+    hsv_color = list(hsv_color)
+    hsv_color[2] += brightness_offset
+    if hsv_color[2] < 0:
+        hsv_color[2] = 0
+    elif hsv_color[2] > 255:
+        hsv_color[2] = 255
+    return fillcolor_hsv
+
 if __name__ == '__main__':
     groups = []
     for i, group_settings in enumerate(S('groups')):
@@ -82,9 +93,18 @@ if __name__ == '__main__':
             node.options['label'] = '""'
 
             basecolor_rgb_dec = S('basecolor', group_settings)
-            basecolor_rgb_hex = ['{:0<2}'.format(hex(v)[2:]) for v in basecolor_rgb_dec]
-            basecolor_rgb = '#' + ''.join(basecolor_rgb_hex)
-            node.options['fillcolor'] = '"{0}"'.format(basecolor_rgb)
+
+            fillcolor_hsv = list(colorsys.rgb_to_hsv(*basecolor_rgb_dec))
+            brightness_offset = S('brightness_offset', group_settings)
+
+            fillcolor_hsv = hsv_color_variant(fillcolor_hsv, brightness_offset)
+
+            fillcolor_rgb_dec = [int(v) for v in colorsys.hsv_to_rgb(*fillcolor_hsv)]
+
+            fillcolor_rgb_hex = ['{:0<2}'.format(hex(v)[2:]) for v in fillcolor_rgb_dec]
+            fillcolor_rgb = '#' + ''.join(fillcolor_rgb_hex)
+
+            node.options['fillcolor'] = '"{0}"'.format(fillcolor_rgb)
 
             nodes.append(node)
 
