@@ -127,10 +127,16 @@ if __name__ == '__main__':
             brightness_offset = S('brightness_offset', group_settings)
 
             fillcolor_hsv = hsv_color_variant(fillcolor_hsv, brightness_offset)
+            color_hsv = fillcolor_hsv.copy()
+            color_hsv[2] = max(0, color_hsv[2] - 100)
+
             fillcolor_rgb_dec = [int(v) for v in colorsys.hsv_to_rgb(*fillcolor_hsv)]
+            color_rgb_dec = [int(v) for v in colorsys.hsv_to_rgb(*color_hsv)]
 
             fillcolor_rgb = rgb_dec_to_rgb_hex(fillcolor_rgb_dec)
+            color_rgb = rgb_dec_to_rgb_hex(color_rgb_dec)
 
+            node.options['color'] = '{0}'.format(color_rgb)
             node.options['fillcolor'] = '{0}'.format(fillcolor_rgb)
 
             nodes.append(node)
