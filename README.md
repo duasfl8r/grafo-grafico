@@ -1,5 +1,8 @@
-Grafo-gráfico: arte como grafo, grafo como arte
-===============================================
+Grafo-gráfico
+=============
+
+Arte como grafo, grafo como arte
+--------------------------------
 
 ![Exemplo](https://raw.github.com/lucastx/grafo-grafico/master/exemplo.png)
 
