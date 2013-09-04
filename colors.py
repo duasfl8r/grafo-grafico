@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 def hsv_change_brightness(hsv_color, brightness_offset):
     new_hsv_color = list(hsv_color)
 
