@@ -16,6 +16,9 @@ Segundo o manual do Graphviz:
 > baseia na estratégia direcionada-a-forças, no espírito de Fruchterman e
 > Reingold.
 
+Esse projeto está licenciado sob GNU GPLv3 ou superior -- os termos da
+licença estão em `LICENSE.txt`.
+
 Dependências
 ------------
 
