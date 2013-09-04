@@ -86,6 +86,7 @@ SETTINGS = {
     },
 }
 
+
 def eval_setting(setting):
     if hasattr(setting, '__call__'):
         return setting()
@@ -109,3 +110,4 @@ def get_setting(name, subsettings=None):
             return None
 
     return eval_setting(subsettings)
+

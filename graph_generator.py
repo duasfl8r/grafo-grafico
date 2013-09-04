@@ -3,6 +3,8 @@ import colorsys
 
 from settings import get_setting as S
 
+from colors import rgb_hex_to_rgb_dec, rgb_dec_to_rgb_hex, hsv_change_brightness
+
 class Graph:
     def __init__(self):
         self.nodes = set()
@@ -90,28 +92,6 @@ def make_intergroup_links(groups):
                 linked_node = random.choice(other_group)
                 node.link(linked_node)
 
-def hsv_color_variant(hsv_color, brightness_offset):
-    new_hsv_color = list(hsv_color)
-
-    new_hsv_color[2] += brightness_offset
-
-    if new_hsv_color[2] < 0 or new_hsv_color[2] > 255:
-        return hsv_color
-
-    return new_hsv_color
-
-def rgb_hex_to_rgb_dec(rgb_hex):
-    assert(len(rgb_hex) == 7), rgb_hex
-
-    hex_colors = [rgb_hex[i:i+2] for i in [1, 3, 5]]
-    return tuple(int(c, 16) for c in hex_colors)
-
-def rgb_dec_to_rgb_hex(rgb_dec):
-    assert(len(rgb_dec) == 3)
-
-    hex_colors = ['{:0>2}'.format(hex(v)[2:]) for v in rgb_dec]
-    return '#' + ''.join(hex_colors)
-
 if __name__ == '__main__':
     groups = []
     for i, group_settings in enumerate(S('groups')):
@@ -126,9 +106,8 @@ if __name__ == '__main__':
             fillcolor_hsv = list(colorsys.rgb_to_hsv(*basecolor_rgb_dec))
             brightness_offset = S('brightness_offset', group_settings)
 
-            fillcolor_hsv = hsv_color_variant(fillcolor_hsv, brightness_offset)
-            color_hsv = fillcolor_hsv.copy()
-            color_hsv[2] = max(0, color_hsv[2] - 100)
+            fillcolor_hsv = hsv_change_brightness(fillcolor_hsv, brightness_offset)
+            color_hsv = hsv_change_brightness(fillcolor_hsv, -100)
 
             fillcolor_rgb_dec = [int(v) for v in colorsys.hsv_to_rgb(*fillcolor_hsv)]
             color_rgb_dec = [int(v) for v in colorsys.hsv_to_rgb(*color_hsv)]
