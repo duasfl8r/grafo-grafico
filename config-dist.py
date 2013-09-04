@@ -17,24 +17,25 @@ CONFIG = {
     # Lista de grupos e suas opções específicas
     'groups': [
         {
-            # Cor base dos nós do grupo, em HSV
-            'basecolor': (142, 76, 211),
-            # Variação do brilho pra cada nó específico
+            # Cor base dos nós do grupo
+            'basecolor': '#8e4cd3',
+            # Variação do brilho pra cada nó específico -- altera o
+            # 'value' da imagem convertida em HSV
             #
             # Mexa no segundo parâmetro pra alterar a amplitude de
             # variação de tons.
             'brightness_offset': lambda: round(random.gauss(0, 40)),
         },
         {
-            'basecolor': (60, 60, 156),
+            'basecolor': '#3c3c9c',
             'brightness_offset': lambda: round(random.gauss(0, 40)),
         },
         {
-            'basecolor': (156, 60, 115),
+            'basecolor': '#9c3c73',
             'brightness_offset': lambda: round(random.gauss(0, 40)),
         },
         {
-            'basecolor': (90, 130, 200),
+            'basecolor': '#5a82c8',
             'brightness_offset': lambda: round(random.gauss(0, 40)),
         },
     ],

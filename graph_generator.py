@@ -2,7 +2,6 @@
 
 import sys
 import random
-import colorsys
 
 try:
     from config import CONFIG
@@ -11,7 +10,7 @@ except ImportError:
     sys.exit(-1)
 
 
-from colors import rgb_hex_to_rgb_dec, rgb_dec_to_rgb_hex, hsv_change_brightness
+from colors import rgb_to_hsv, hsv_to_rgb, hsv_change_brightness
 
 class Graph:
     def __init__(self):
@@ -58,19 +57,16 @@ class Node:
 
             for linked_node in self.links:
 
-                if self.options['fillcolor'] and linked_node.options['fillcolor']:
-                    color_a_rgb_dec = rgb_hex_to_rgb_dec(self.options['fillcolor'])
-                    color_b_rgb_dec = rgb_hex_to_rgb_dec(linked_node.options['fillcolor'])
-                    color_a_hsv = colorsys.rgb_to_hsv(*color_a_rgb_dec)
-                    color_b_hsv = colorsys.rgb_to_hsv(*color_b_rgb_dec)
+                if 'fillcolor' in self.options and 'fillcolor' in linked_node.options:
+                    color_a_hsv = rgb_to_hsv(self.options['fillcolor'])
+                    color_b_hsv = rgb_to_hsv(linked_node.options['fillcolor'])
 
                     average_color_hsv = tuple((a+b)/2 for a, b in zip(color_a_hsv, color_b_hsv))
-                    average_color_rgb_dec = [int(v) for v in colorsys.hsv_to_rgb(*average_color_hsv)]
 
-                    average_color_rgb_hex = rgb_dec_to_rgb_hex(average_color_rgb_dec)
+                    average_color_rgb = hsv_to_rgb(average_color_hsv)
 
 
-                    edge_options = 'color = "{}"'.format(average_color_rgb_hex)
+                    edge_options = 'color = "{}"'.format(average_color_rgb)
 
                 yield '{0} -- {1} [{2}]'.format(self.name, linked_node.name, edge_options)
 
@@ -145,14 +141,8 @@ def paint_node(node, basecolor):
     fillcolor = basecolor.copy()
     bordercolor = hsv_change_brightness(fillcolor, -100)
 
-    # gera uma tuple de int's, em vez da tuple de float's do colorsys
-    hsv_to_rgb = lambda h, s, v: [int(v) for v in colorsys.hsv_to_rgb(h, s, v)]
-
-    fillcolor_rgb_dec = hsv_to_rgb(*fillcolor)
-    bordercolor_rgb_dec = hsv_to_rgb(*bordercolor)
-
-    fillcolor_rgb = rgb_dec_to_rgb_hex(fillcolor_rgb_dec)
-    bordercolor_rgb = rgb_dec_to_rgb_hex(bordercolor_rgb_dec)
+    fillcolor_rgb = hsv_to_rgb(fillcolor)
+    bordercolor_rgb = hsv_to_rgb(bordercolor)
 
     node.options['color'] = '{0}'.format(bordercolor_rgb)
     node.options['fillcolor'] = '{0}'.format(fillcolor_rgb)
@@ -166,10 +156,10 @@ if __name__ == '__main__':
             node = Node(name)
             node.options['label'] = ''
 
-            basecolor_rgb_dec = cfg('basecolor', group_options)
+            basecolor_rgb = cfg('basecolor', group_options)
             brightness_offset = cfg('brightness_offset', group_options)
 
-            basecolor_hsv = list(colorsys.rgb_to_hsv(*basecolor_rgb_dec))
+            basecolor_hsv = rgb_to_hsv(basecolor_rgb)
 
             changed_basecolor_hsv = hsv_change_brightness(basecolor_hsv, brightness_offset)
 
