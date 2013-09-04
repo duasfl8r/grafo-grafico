@@ -1,7 +1,13 @@
+import sys
 import random
 import colorsys
 
-from settings import get_setting as S
+try:
+    from config import CONFIG
+except ImportError:
+    sys.stderr.write('Arquivo `config.py` não encontrado. Você já o copiou de `config-dist.py?`')
+    sys.exit(-1)
+
 
 from colors import rgb_hex_to_rgb_dec, rgb_dec_to_rgb_hex, hsv_change_brightness
 
@@ -68,6 +74,41 @@ class Node:
 
         return '\n'.join(list(links_generator()))
 
+def cfg(name, suboptions=None):
+    def parse_config_file(fname):
+        """Parses the configuration file `fname`.
+
+        `fname` must be a YAML file.
+
+        Returns a configuration dictionary.
+        """
+
+        with codecs.open(fname, encoding='utf-8') as yaml_file:
+            return yaml.load(yaml_file)
+
+    def eval_option(option):
+        if hasattr(option, '__call__'):
+            return option()
+        return option
+
+    if suboptions == None:
+        suboptions = CONFIG
+
+    path = name.split('.')
+    for part in path:
+        if isinstance(suboptions, dict):
+            if part in suboptions:
+                suboptions = suboptions[part]
+            else:
+                return None
+        elif isinstance(suboptions, (list, tuple)):
+            index = int(part)
+            return suboptions[index]
+        else:
+            return None
+
+    return eval_option(suboptions)
+
 def random_different_element(seq, not_this):
     assert len(seq) > 1
     while True:
@@ -77,16 +118,16 @@ def random_different_element(seq, not_this):
 
 def make_intragroup_links(nodes):
     for node in nodes:
-        number_of_links = S('group.intralinks_per_node')
+        number_of_links = cfg('group.intralinks_per_node')
         for i in range(number_of_links):
             linked_node = random_different_element(group, node)
             node.link(linked_node)
 
 def make_intergroup_links(groups):
     for group in groups:
-        for i in range(S('group.nodes_with_extralinks')):
+        for i in range(cfg('group.nodes_with_extralinks')):
             node = random.choice(group)
-            number_of_links = S('group.extralinks_per_node')
+            number_of_links = cfg('group.extralinks_per_node')
             for i in range(number_of_links):
                 other_group = random_different_element(groups, group)
                 linked_node = random.choice(other_group)
@@ -94,17 +135,17 @@ def make_intergroup_links(groups):
 
 if __name__ == '__main__':
     groups = []
-    for i, group_settings in enumerate(S('groups')):
+    for i, group_options in enumerate(cfg('groups')):
         nodes = []
-        for n in range(S('group.number_of_nodes')):
+        for n in range(cfg('group.number_of_nodes')):
             name = 'g{0}_n{1}'.format(i, n)
             node = Node(name)
             node.options['label'] = ''
 
-            basecolor_rgb_dec = S('basecolor', group_settings)
+            basecolor_rgb_dec = cfg('basecolor', group_options)
 
             fillcolor_hsv = list(colorsys.rgb_to_hsv(*basecolor_rgb_dec))
-            brightness_offset = S('brightness_offset', group_settings)
+            brightness_offset = cfg('brightness_offset', group_options)
 
             fillcolor_hsv = hsv_change_brightness(fillcolor_hsv, brightness_offset)
             color_hsv = hsv_change_brightness(fillcolor_hsv, -100)
@@ -128,8 +169,8 @@ if __name__ == '__main__':
     make_intergroup_links(groups)
 
     graph = Graph()
-    graph.graph_options.update(S('graphviz.graph'))
-    graph.node_options.update(S('graphviz.node'))
+    graph.graph_options.update(cfg('graphviz.graph'))
+    graph.node_options.update(cfg('graphviz.node'))
 
     for group in groups:
         for node in group:

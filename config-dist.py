@@ -1,6 +1,6 @@
 import random
 
-SETTINGS = {
+CONFIG = {
     'groups': [
         {
             'basecolor': (142, 76, 211),
@@ -85,29 +85,3 @@ SETTINGS = {
         },
     },
 }
-
-
-def eval_setting(setting):
-    if hasattr(setting, '__call__'):
-        return setting()
-    return setting
-
-def get_setting(name, subsettings=None):
-    if subsettings == None:
-        subsettings = SETTINGS
-
-    path = name.split('.')
-    for part in path:
-        if isinstance(subsettings, dict):
-            if part in subsettings:
-                subsettings = subsettings[part]
-            else:
-                return None
-        elif isinstance(subsettings, (list, tuple)):
-            index = int(part)
-            return subsettings[index]
-        else:
-            return None
-
-    return eval_setting(subsettings)
-
