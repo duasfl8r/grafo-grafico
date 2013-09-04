@@ -3,14 +3,13 @@
 import sys
 import random
 
+from colors import rgb_to_hsv, hsv_to_rgb, hsv_change_brightness
+
 try:
     from config import CONFIG
 except ImportError:
     sys.stderr.write('Arquivo `config.py` não encontrado. Você já o copiou de `config-dist.py?`')
     sys.exit(-1)
-
-
-from colors import rgb_to_hsv, hsv_to_rgb, hsv_change_brightness
 
 class Graph:
     def __init__(self):
@@ -72,7 +71,7 @@ class Node:
 
         return '\n'.join(list(links_generator()))
 
-def cfg(name, suboptions=None):
+def cfg(name, config):
     def parse_config_file(fname):
         """Parses the configuration file `fname`.
 
@@ -89,23 +88,20 @@ def cfg(name, suboptions=None):
             return option()
         return option
 
-    if suboptions == None:
-        suboptions = CONFIG
-
     path = name.split('.')
     for part in path:
-        if isinstance(suboptions, dict):
-            if part in suboptions:
-                suboptions = suboptions[part]
+        if isinstance(config, dict):
+            if part in config:
+                config = config[part]
             else:
                 return None
-        elif isinstance(suboptions, (list, tuple)):
+        elif isinstance(config, (list, tuple)):
             index = int(part)
-            return suboptions[index]
+            return config[index]
         else:
             return None
 
-    return eval_option(suboptions)
+    return eval_option(config)
 
 def random_different_element(seq, not_this):
     assert len(seq) > 1
@@ -114,22 +110,39 @@ def random_different_element(seq, not_this):
         if trial != not_this:
             return trial
 
-def make_intragroup_links(nodes):
+def make_intragroup_links(nodes, config):
     for node in nodes:
-        number_of_links = int(cfg('group.intralinks_per_node'))
+        number_of_links = int(cfg('group.intralinks_per_node', config))
         for i in range(number_of_links):
-            linked_node = random_different_element(group, node)
+            linked_node = random_different_element(nodes, node)
             node.link(linked_node)
 
-def make_intergroup_links(groups):
+def make_intergroup_links(groups, config):
     for group in groups:
-        for i in range(cfg('group.nodes_with_extralinks')):
+        for i in range(cfg('group.nodes_with_extralinks', config)):
             node = random.choice(group)
-            number_of_links = int(cfg('group.extralinks_per_node'))
+            number_of_links = int(cfg('group.extralinks_per_node', config))
             for i in range(number_of_links):
                 other_group = random_different_element(groups, group)
                 linked_node = random.choice(other_group)
                 node.link(linked_node)
+
+def make_node(name, group_index, config):
+    group_options = cfg('groups.{}'.format(group_index), config)
+
+    node = Node(name)
+    node.options['label'] = ''
+
+    basecolor_rgb = cfg('basecolor', group_options)
+    brightness_offset = cfg('brightness_offset', group_options)
+
+    basecolor_hsv = rgb_to_hsv(basecolor_rgb)
+
+    changed_basecolor_hsv = hsv_change_brightness(basecolor_hsv, brightness_offset)
+
+    paint_node(node, changed_basecolor_hsv)
+
+    return node
 
 def paint_node(node, basecolor):
     """
@@ -147,42 +160,33 @@ def paint_node(node, basecolor):
     node.options['color'] = '{0}'.format(bordercolor_rgb)
     node.options['fillcolor'] = '{0}'.format(fillcolor_rgb)
 
-if __name__ == '__main__':
+def make_graph(config):
+    graph = Graph()
+    graph.graph_options.update(cfg('graphviz.graph', config))
+    graph.node_options.update(cfg('graphviz.node', config))
+
     groups = []
-    for i, group_options in enumerate(cfg('groups')):
+
+    for g, group_options in enumerate(cfg('groups', config)):
+        number_of_nodes = cfg('group.number_of_nodes', config)
+
         nodes = []
-        for n in range(cfg('group.number_of_nodes')):
-            name = 'g{0}_n{1}'.format(i, n)
-            node = Node(name)
-            node.options['label'] = ''
+        for n in range(number_of_nodes):
+            name = 'g{0}_n{1}'.format(g, n)
+            node = make_node(name, g, config)
 
-            basecolor_rgb = cfg('basecolor', group_options)
-            brightness_offset = cfg('brightness_offset', group_options)
-
-            basecolor_hsv = rgb_to_hsv(basecolor_rgb)
-
-            changed_basecolor_hsv = hsv_change_brightness(basecolor_hsv, brightness_offset)
-
-            paint_node(node, changed_basecolor_hsv)
-
-
-
-
+            graph.nodes.add(node)
             nodes.append(node)
 
         groups.append(nodes),
 
     for group in groups:
-        make_intragroup_links(group)
+        make_intragroup_links(group, config)
 
-    make_intergroup_links(groups)
+    make_intergroup_links(groups, config)
 
-    graph = Graph()
-    graph.graph_options.update(cfg('graphviz.graph'))
-    graph.node_options.update(cfg('graphviz.node'))
+    return graph
 
-    for group in groups:
-        for node in group:
-            graph.nodes.add(node)
-
+if __name__ == '__main__':
+    graph = make_graph(CONFIG)
     print(graph.graphviz())
