@@ -1,6 +1,8 @@
 Grafo-gráfico: arte como grafo, grafo como arte
 ===============================================
 
+![Exemplo](https://raw.github.com/lucastx/grafo-grafico/master/exemplo.png)
+
 Gera imagens de grupos de grafos intra e extra-ligados --
 uma visualização artística de organizações P2P.
 
@@ -36,13 +38,13 @@ como quiser -- as opções estão levemente documentadas.
 Usando
 ------
 
-# Com o make
+### Com o make
 
 ```bash
 make build
 ```
 
-# Manualmente
+### Manualmente
 
 ```bash
 python graph_generator.py > grafo.gv
