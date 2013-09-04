@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 import sys
 import random
 import colorsys
@@ -118,7 +120,7 @@ def random_different_element(seq, not_this):
 
 def make_intragroup_links(nodes):
     for node in nodes:
-        number_of_links = cfg('group.intralinks_per_node')
+        number_of_links = int(cfg('group.intralinks_per_node'))
         for i in range(number_of_links):
             linked_node = random_different_element(group, node)
             node.link(linked_node)
@@ -127,7 +129,7 @@ def make_intergroup_links(groups):
     for group in groups:
         for i in range(cfg('group.nodes_with_extralinks')):
             node = random.choice(group)
-            number_of_links = cfg('group.extralinks_per_node')
+            number_of_links = int(cfg('group.extralinks_per_node'))
             for i in range(number_of_links):
                 other_group = random_different_element(groups, group)
                 linked_node = random.choice(other_group)
