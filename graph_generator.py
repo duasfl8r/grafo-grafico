@@ -135,6 +135,28 @@ def make_intergroup_links(groups):
                 linked_node = random.choice(other_group)
                 node.link(linked_node)
 
+def paint_node(node, basecolor):
+    """
+    Argumentos:
+
+    - color: tuple em formato HSV: `(hue, saturation, value)`
+    """
+
+    fillcolor = basecolor.copy()
+    bordercolor = hsv_change_brightness(fillcolor, -100)
+
+    # gera uma tuple de int's, em vez da tuple de float's do colorsys
+    hsv_to_rgb = lambda h, s, v: [int(v) for v in colorsys.hsv_to_rgb(h, s, v)]
+
+    fillcolor_rgb_dec = hsv_to_rgb(*fillcolor)
+    bordercolor_rgb_dec = hsv_to_rgb(*bordercolor)
+
+    fillcolor_rgb = rgb_dec_to_rgb_hex(fillcolor_rgb_dec)
+    bordercolor_rgb = rgb_dec_to_rgb_hex(bordercolor_rgb_dec)
+
+    node.options['color'] = '{0}'.format(bordercolor_rgb)
+    node.options['fillcolor'] = '{0}'.format(fillcolor_rgb)
+
 if __name__ == '__main__':
     groups = []
     for i, group_options in enumerate(cfg('groups')):
@@ -145,21 +167,16 @@ if __name__ == '__main__':
             node.options['label'] = ''
 
             basecolor_rgb_dec = cfg('basecolor', group_options)
-
-            fillcolor_hsv = list(colorsys.rgb_to_hsv(*basecolor_rgb_dec))
             brightness_offset = cfg('brightness_offset', group_options)
 
-            fillcolor_hsv = hsv_change_brightness(fillcolor_hsv, brightness_offset)
-            color_hsv = hsv_change_brightness(fillcolor_hsv, -100)
+            basecolor_hsv = list(colorsys.rgb_to_hsv(*basecolor_rgb_dec))
 
-            fillcolor_rgb_dec = [int(v) for v in colorsys.hsv_to_rgb(*fillcolor_hsv)]
-            color_rgb_dec = [int(v) for v in colorsys.hsv_to_rgb(*color_hsv)]
+            changed_basecolor_hsv = hsv_change_brightness(basecolor_hsv, brightness_offset)
 
-            fillcolor_rgb = rgb_dec_to_rgb_hex(fillcolor_rgb_dec)
-            color_rgb = rgb_dec_to_rgb_hex(color_rgb_dec)
+            paint_node(node, changed_basecolor_hsv)
 
-            node.options['color'] = '{0}'.format(color_rgb)
-            node.options['fillcolor'] = '{0}'.format(fillcolor_rgb)
+
+
 
             nodes.append(node)
 
