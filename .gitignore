@@ -1,4 +1,5 @@
 _build
 config.py
+graph_generator.log
 __pycache__
 *.pyc

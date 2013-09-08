@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 import sys
+import os
 import random
 
 from colors import rgb_to_hsv, hsv_to_rgb, hsv_change_brightness
@@ -10,6 +11,16 @@ try:
 except ImportError:
     sys.stderr.write('Arquivo `config.py` não encontrado. Você já o copiou de `config-dist.py?`')
     sys.exit(-1)
+
+LOGFILE = 'graph_generator.log'
+
+def flush_logs():
+    if os.path.isfile(LOGFILE):
+        os.remove(LOGFILE)
+
+def debug(msg):
+    with open(LOGFILE, 'a') as logfile:
+        logfile.write(msg + '\n')
 
 class Graph:
     def __init__(self):
@@ -188,5 +199,6 @@ def make_graph(config):
     return graph
 
 if __name__ == '__main__':
+    flush_logs()
     graph = make_graph(CONFIG)
     print(graph.graphviz())
