@@ -26,3 +26,12 @@ def hsv_to_rgb(hsv):
     rgb_decimal = [int(v) for v in colorsys.hsv_to_rgb(*hsv)]
     hex_colors = ['{:0>2}'.format(hex(v)[2:]) for v in rgb_decimal]
     return '#' + ''.join(hex_colors)
+
+def rgb_hex_to_decimal(rgb_hex):
+    hex_values = rgb_hex[1:3], rgb_hex[3:5], rgb_hex[5:7]
+    return tuple(int(v, 16) for v in hex_values)
+
+def rgb_decimal_to_hex(rgb_decimal):
+    hex_values = [hex(int(d))[2:] for d in rgb_decimal]
+    padded_hex_values = ['{:0>2}'.format(h) for h in hex_values]
+    return '#' + ''.join(padded_hex_values)
