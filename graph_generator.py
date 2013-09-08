@@ -4,7 +4,7 @@ import sys
 import os
 import random
 
-from colors import rgb_to_hsv, hsv_to_rgb, hsv_change_brightness, rgb_hex_to_decimal, rgb_decimal_to_hex
+from colors import rgb_to_hsv, hsv_to_rgb, hsv_change_brightness, rgb_hex_to_decimal, rgb_decimal_to_hex, rgb_average
 
 try:
     from config import CONFIG
@@ -66,27 +66,8 @@ class Node:
             yield '{0} [{1}]'.format(self.name, ','.join(option_strs))
 
             for linked_node in self.links:
-                def link_color(node1, node2):
-                    node1_color_rgb = node1.options['fillcolor']
-                    node2_color_rgb = node2.options['fillcolor']
-
-                    node1_color_decimals = rgb_hex_to_decimal(node1_color_rgb)
-                    node2_color_decimals = rgb_hex_to_decimal(node2_color_rgb)
-
-                    avg = lambda a, b: (a+b)/2
-
-                    average_color_decimals = (
-                        avg(node1_color_decimals[0], node2_color_decimals[0]),
-                        avg(node1_color_decimals[1], node2_color_decimals[1]),
-                        avg(node1_color_decimals[2], node2_color_decimals[2]),
-                    )
-
-                    result = rgb_decimal_to_hex(average_color_decimals)
-
-                    debug("link color: {} [{}], {} [{}] -> {}".format(node1.name, node1_color_rgb, node2.name, node2_color_rgb, result))
-                    return result
-
-                edge_options = 'color = "{}"'.format(link_color(self, linked_node))
+                edge_color = rgb_average(self.options['fillcolor'], linked_node.options['fillcolor'])
+                edge_options = 'color = "{}"'.format(edge_color)
 
                 yield '{0} -- {1} [{2}]'.format(self.name, linked_node.name, edge_options)
 

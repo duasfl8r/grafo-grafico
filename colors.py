@@ -1,6 +1,27 @@
 # -*- encoding: utf-8 -*-
 import colorsys
 
+def rgb_average(color1, color2):
+    """
+    Retorna a "cor média" entre duas cores, calculada tirando a média de
+    seus valores vermelho, verde e azul.
+
+    Argumentos:
+        - color1: string representando uma cor RGB (e.g. "#ff0000")
+        - color2: string representando uma cor RGB (e.g. "#ff0000")
+    """
+
+    color1_decimals = rgb_hex_to_decimal(color1)
+    color2_decimals = rgb_hex_to_decimal(color2)
+
+    avg = lambda a, b: (a+b)/2
+
+    average_color_decimals = tuple(
+        avg(c1, c2) for c1, c2 in zip(color1_decimals, color2_decimals)
+    )
+
+    return rgb_decimal_to_hex(average_color_decimals)
+
 def hsv_change_brightness(hsv_color, brightness_offset):
     new_hsv_color = list(hsv_color)
 
@@ -12,7 +33,6 @@ def hsv_change_brightness(hsv_color, brightness_offset):
         new_hsv_color[2] = 255
 
     return new_hsv_color
-
 
 def rgb_to_hsv(rgb):
     assert(len(rgb) == 7), rgb_hex
