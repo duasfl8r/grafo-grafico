@@ -105,18 +105,22 @@ def cfg(name, config):
 
     return eval_option(config)
 
-def random_different_element(seq, not_this):
-    assert len(seq) > 1
-    while True:
-        trial = random.choice(seq)
-        if trial != not_this:
-            return trial
+def try_to_choose_another(seq, not_this):
+    if len(seq) == 0:
+        return None
+    elif len(seq) == 1:
+        return seq[0]
+    else:
+        while True:
+            trial = random.choice(seq)
+            if trial != not_this:
+                return trial
 
 def make_intragroup_links(nodes, config):
     for node in nodes:
         number_of_links = int(cfg('group.intralinks_per_node', config))
         for i in range(number_of_links):
-            linked_node = random_different_element(nodes, node)
+            linked_node = try_to_choose_another(nodes, node)
             node.link(linked_node)
 
 def make_intergroup_links(groups, config):
@@ -125,7 +129,7 @@ def make_intergroup_links(groups, config):
             node = random.choice(group)
             number_of_links = int(cfg('group.extralinks_per_node', config))
             for i in range(number_of_links):
-                other_group = random_different_element(groups, group)
+                other_group = try_to_choose_another(groups, group)
                 linked_node = random.choice(other_group)
                 node.link(linked_node)
 
