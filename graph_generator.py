@@ -149,7 +149,7 @@ def paint_node(node, basecolor):
     - color: tuple em formato HSV: `(hue, saturation, value)`
     """
 
-    fillcolor = basecolor.copy()
+    fillcolor = basecolor[::]
     bordercolor = hsv_change_brightness(fillcolor, -100)
 
     fillcolor_rgb = hsv_to_rgb(fillcolor)
