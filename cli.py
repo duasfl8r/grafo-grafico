@@ -17,7 +17,7 @@ import sys
 
 from docopt import docopt
 
-from config import VERSION, LOGFILE
+from settings import VERSION, LOGFILE
 from graph_generator import make_graph
 
 CONFIG = None

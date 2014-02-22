@@ -4,7 +4,7 @@ import sys
 import os
 import random
 
-from config import LOGFILE
+from settings import LOGFILE
 from colors import rgb_to_hsv, hsv_to_rgb, hsv_change_brightness, rgb_hex_to_decimal, rgb_decimal_to_hex, rgb_average
 
 def debug(msg):
