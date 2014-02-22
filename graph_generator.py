@@ -4,19 +4,8 @@ import sys
 import os
 import random
 
+from config import LOGFILE
 from colors import rgb_to_hsv, hsv_to_rgb, hsv_change_brightness, rgb_hex_to_decimal, rgb_decimal_to_hex, rgb_average
-
-try:
-    from config import CONFIG
-except ImportError:
-    sys.stderr.write('Arquivo `config.py` não encontrado. Você já o copiou de `config-dist.py?`')
-    sys.exit(-1)
-
-LOGFILE = 'graph_generator.log'
-
-def flush_logs():
-    if os.path.isfile(LOGFILE):
-        os.remove(LOGFILE)
 
 def debug(msg):
     with open(LOGFILE, 'a') as logfile:
@@ -27,6 +16,9 @@ class Graph:
         self.nodes = set()
         self.graph_options = {}
         self.node_options = {}
+
+    def save_png(self, filename):
+        debug("Salvando como PNG em '{0}' (dummy-mode)...".format(filename))
 
     def graphviz(self):
         content = '\n'.join(node.graphviz() for node in self.nodes)
@@ -192,8 +184,3 @@ def make_graph(config):
     make_intergroup_links(groups, config)
 
     return graph
-
-if __name__ == '__main__':
-    flush_logs()
-    graph = make_graph(CONFIG)
-    print(graph.graphviz())
