@@ -3,6 +3,7 @@
 import sys
 import os
 import random
+from subprocess import Popen, PIPE
 
 from settings import LOGFILE
 from colors import rgb_to_hsv, hsv_to_rgb, hsv_change_brightness, rgb_hex_to_decimal, rgb_decimal_to_hex, rgb_average
@@ -18,7 +19,12 @@ class Graph:
         self.node_options = {}
 
     def save_png(self, filename):
-        debug("Salvando como PNG em '{0}' (dummy-mode)...".format(filename))
+        debug("Salvando como PNG em '{0}'...".format(filename))
+        command = ["fdp", "-T", "png", "-o", filename]
+
+        process = Popen(command, stdin=PIPE)
+        process.communicate(input=self.graphviz())
+
 
     def graphviz(self):
         content = '\n'.join(node.graphviz() for node in self.nodes)
@@ -182,5 +188,6 @@ def make_graph(config):
         make_intragroup_links(group, config)
 
     make_intergroup_links(groups, config)
+
 
     return graph
