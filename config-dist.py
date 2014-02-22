@@ -3,14 +3,25 @@
 import random
 
 """
-Configurações gerais.
+Configurações do grafo-grafico.
 
-Se um valor de configuração for uma função, a função será chamada cada
-vez que a configuração for acessada.
+Dentro do grafo-grafico, uma configuração acessada com:
 
-Isso permite que a configuração retorne valores aleatórios, ou numa
+    cfg('groups.0.base_color')
+
+Equivale a acessar o valor de `CONFIG` dessa forma:
+
+    CONFIG['groups'][0]['base_color']
+
+Se o valor retornado por esse acesso for uma função, ele é então
+invocado como tal e o valor retornado se torna o valor da configuração
+naquele dado acesso.
+
+Num próximo acesso à mesma configuração, a função é novamente invocada e
+um novo valor retornado.
+
+Isso permite que a configuração retorne valores aleatórios, ou usando uma
 distribuição estatística.
-
 """
 
 CONFIG = {
