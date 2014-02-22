@@ -1,7 +1,5 @@
 # -*- encoding: utf-8 -*-
 
-import random
-
 """
 Configurações do grafo-grafico.
 
@@ -23,6 +21,8 @@ um novo valor retornado.
 Isso permite que a configuração retorne valores aleatórios, ou usando uma
 distribuição estatística.
 """
+
+import random
 
 CONFIG = {
     # Lista de grupos e suas opções específicas
