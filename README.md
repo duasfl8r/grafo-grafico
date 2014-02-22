@@ -4,7 +4,7 @@ Grafo-gráfico
 Arte como grafo, grafo como arte
 --------------------------------
 
-![Exemplo](https://raw.github.com/lucastx/grafo-grafico/master/exemplo.png)
+![Exemplo](https://raw.github.com/lucastx/grafo-grafico/master/examples/grafo.png)
 
 Gera imagens de grupos de grafos intra e extra-ligados --
 uma visualização artística de organizações P2P.
@@ -41,20 +41,14 @@ como quiser -- as opções estão levemente documentadas.
 Usando
 ------
 
-### Com o make
-
 ```bash
-make build
+python cli.py generate --format=png --output=grafo.png
 ```
 
-### Manualmente
+Pra poder ver o código-fonte do grafo gerado, ou mexer nas opções do `fdp`
+do Graphviz:
 
 ```bash
-python graph_generator.py > grafo.gv
-```
-
-Geramos então a imagem final usando a ferramenta `fdp` do Graphviz:
-
-```bash
+python cli.py generate > grafo.gv
 fdp -Tpng -o grafo.png grafo.gv
 ```
