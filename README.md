@@ -4,7 +4,7 @@ Grafo-gráfico
 Arte como grafo, grafo como arte
 --------------------------------
 
-![Exemplo](https://raw.github.com/lucastx/grafo-grafico/master/exemplo.png)
+![Exemplo](https://raw.github.com/lucastx/grafo-grafico/master/examples/grafo.png)
 
 Gera imagens de grupos de grafos intra e extra-ligados --
 uma visualização artística de organizações P2P.
