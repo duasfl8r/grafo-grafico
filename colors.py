@@ -32,8 +32,6 @@ def hsv_change_brightness(hsv_color, brightness_offset):
     elif new_hsv_color[2] > 1:
         new_hsv_color[2] = 1
 
-    print("new_hsv_color: ", new_hsv_color)
-
     return new_hsv_color
 
 def rgb_to_hsv(rgb):
