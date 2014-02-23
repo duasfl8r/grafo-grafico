@@ -146,6 +146,14 @@ def make_node(name, group_index, config):
 
     paint_node(node, changed_basecolor_hsv)
 
+    base_diameter = cfg('base_diameter', group_options)
+    diameter_offset = cfg('diameter_offset', group_options)
+
+    actual_diameter = base_diameter + diameter_offset
+
+    node.options['width'] = actual_diameter
+    node.options['height'] = actual_diameter
+
     return node
 
 def paint_node(node, basecolor):
