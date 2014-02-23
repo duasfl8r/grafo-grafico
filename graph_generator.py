@@ -156,7 +156,7 @@ def paint_node(node, basecolor):
     """
 
     fillcolor = basecolor[::]
-    bordercolor = hsv_change_brightness(fillcolor, -100)
+    bordercolor = hsv_change_brightness(fillcolor, -0.4)
 
     fillcolor_rgb = hsv_to_rgb(fillcolor)
     bordercolor_rgb = hsv_to_rgb(bordercolor)
