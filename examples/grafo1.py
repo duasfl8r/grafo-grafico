@@ -36,18 +36,29 @@ CONFIG = {
             # Mexa no segundo parâmetro pra alterar a amplitude de
             # variação de tons.
             'brightness_offset': lambda: random.gauss(0, 0.2),
+
+            # Diâmetro base dos nós do grupo, em polegadas (inches)
+            'base_diameter': 1,
+            # Variação do diâmetro pra cada nó específico
+            'diameter_offset': lambda: random.gauss(0, 0.2),
         },
         {
             'basecolor': '#3c3c9c',
             'brightness_offset': lambda: random.gauss(0, 0.2),
+            'base_diameter': 1,
+            'diameter_offset': lambda: random.gauss(0, 0.2),
         },
         {
             'basecolor': '#9c3c73',
             'brightness_offset': lambda: random.gauss(0, 0.2),
+            'base_diameter': 1,
+            'diameter_offset': lambda: random.gauss(0, 0.2),
         },
         {
             'basecolor': '#5a82c8',
             'brightness_offset': lambda: random.gauss(0, 0.2),
+            'base_diameter': 1,
+            'diameter_offset': lambda: random.gauss(0, 0.2),
         },
     ],
     # Opções pra todos os grupos
@@ -71,6 +82,7 @@ CONFIG = {
         'node': {
             'style': 'filled',
             'regular': 'true',
+            'fixedsize': 'true',
         },
     },
 }
