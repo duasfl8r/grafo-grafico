@@ -12,35 +12,28 @@ CONFIG = {
             'basecolor': '#8e4cd3',
 
             # Variação do brilho pra cada nó específico -- altera o
-            # 'value' da imagem convertida em HSV
+            # 'value' da imagem convertida em HSV.
             #
             # Mexa no segundo parâmetro pra alterar a amplitude de
             # variação de tons.
             'brightness_offset': lambda: random.gauss(0, 0.2),
 
-            # Diâmetro base dos nós do grupo, em polegadas (inches)
-            'base_diameter': 1,
-
-            # Variação do diâmetro pra cada nó específico, em polegadas
-            'diameter_offset': lambda: random.gauss(0, 0.2),
+            'node_diameter': lambda: random.gauss(1, 0.5),
         },
         {
             'basecolor': '#3c3c9c',
             'brightness_offset': lambda: random.gauss(0, 0.2),
-            'base_diameter': 1,
-            'diameter_offset': lambda: random.gauss(0, 0.2),
+            'node_diameter': lambda: random.gauss(0.2, 0.1),
         },
         {
             'basecolor': '#9c3c73',
             'brightness_offset': lambda: random.gauss(0, 0.2),
-            'base_diameter': 1,
-            'diameter_offset': lambda: random.gauss(0, 0.2),
+            'node_diameter': lambda: random.gauss(3, 1),
         },
         {
             'basecolor': '#5a82c8',
             'brightness_offset': lambda: random.gauss(0, 0.2),
-            'base_diameter': 1,
-            'diameter_offset': lambda: random.gauss(0, 0.2),
+            'node_diameter': lambda: random.gauss(1, 0.2),
         },
     ],
 

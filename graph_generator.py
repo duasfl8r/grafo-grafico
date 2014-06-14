@@ -146,13 +146,14 @@ def make_node(name, group_index, config):
 
     paint_node(node, changed_basecolor_hsv)
 
-    base_diameter = cfg('base_diameter', group_options)
-    diameter_offset = cfg('diameter_offset', group_options)
+    # As `node_diameter` may get below 0 for certain random
+    # distributions, we have to keep generating him until it is positive
+    node_diameter = -1
+    while node_diameter < 0:
+        node_diameter = cfg('node_diameter', group_options)
 
-    actual_diameter = base_diameter + diameter_offset
-
-    node.options['width'] = actual_diameter
-    node.options['height'] = actual_diameter
+    node.options['width'] = node_diameter
+    node.options['height'] = node_diameter
 
     return node
 
