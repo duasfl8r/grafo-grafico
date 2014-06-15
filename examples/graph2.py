@@ -33,7 +33,7 @@ CONFIG = {
             'overlap': 'false',
             'outputorder': 'edgesfirst',
             'bgcolor': 'transparent',
-            'size': '70',
+            'size': '10,10',
         },
         'node': {
             'style': 'filled',

@@ -72,6 +72,8 @@ CONFIG = {
 
             # Cor de fundo, ou 'transparent'
             'bgcolor': 'transparent',
+
+            'size': '10,10'
         },
         'node': {
             # Remover essa opção faz os nós terem só o contorno e as
