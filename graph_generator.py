@@ -56,9 +56,9 @@ class Node:
 
     def graphviz(self):
         option_tuples = [(k, v) for k, v in self.options.items()]
-        option_strs = ['{0}="{1}"'.format(k, v) for k, v in option_tuples]
+        option_str = '\n'.join(['{0}="{1}"'.format(k, v) for k, v in option_tuples])
 
-        return '{0} [{1}]'.format(self.name, ','.join(option_strs))
+        return '{0} [{1}]'.format(self.name, option_str)
 
 
 class Edge:
