@@ -68,9 +68,10 @@ class Edge:
         self.options = {}
 
     def graphviz(self):
-        edge_color = rgb_average(self._n1.options['fillcolor'], self._n2.options['fillcolor'])
-        edge_options = 'color = "{}"'.format(edge_color)
-        return '{0} -- {1} [{2}]'.format(self._n1.name, self._n2.name, edge_options)
+        option_tuples = [(k, v) for k, v in self.options.items()]
+        option_str = '\n'.join(['{0}="{1}"'.format(k, v) for k, v in option_tuples])
+
+        return '{0} -- {1} [{2}]'.format(self._n1.name, self._n2.name, option_str)
 
 
 def cfg(name, config):
