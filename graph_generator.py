@@ -9,16 +9,57 @@ from settings import LOGFILE
 from colors import rgb_to_hsv, hsv_to_rgb, hsv_change_brightness, rgb_hex_to_decimal, rgb_decimal_to_hex, rgb_average
 
 def debug(msg):
+    """
+    Debugs a message to a log file.
+    """
     with open(LOGFILE, 'a') as logfile:
         logfile.write(msg + '\n')
 
 class Graph:
+    """
+    Represents a graph, holding a set of nodes and Graphviz options.
+
+    How to use this class
+    ---------------------
+
+    Create an instance and populate its nodes:
+
+        >>> n1, n2, n3 = Node('n1'), Node('n2'), Node('n3')
+        >>> n1.link(n2)
+        >>> n1.link(n3)
+        >>> n2.link(n3)
+        >>> g = Graph()
+        >>> g.nodes = set([n1, n2, n3])
+
+    Then, you can output a Graphviz representation:
+
+        >>> g.graphviz()
+        graph G {
+        n1 [fillcolor="#ffffff"]
+        n1 -- n2 [color = "#000000"]
+        n1 -- n3 [color = "#000000"]
+        n2 [fillcolor="#ffffff"]
+        n2 -- n3 [color = "#000000"]
+        n3 [fillcolor="#ffffff"]
+        }
+
+    And save a PNG file rendered by Graphviz `fdp`:
+
+        >>> g.save_png('my_graph.png')
+    """
+
     def __init__(self):
         self.nodes = set()
         self.graph_options = {}
         self.node_options = {}
 
     def save_png(self, filename):
+        """
+        Renders this graph through `fdp` and saves the result in a PNG file.
+
+        Arguments:
+            - filename: a relative or absolute filename
+        """
         debug("Salvando como PNG em '{0}'...".format(filename))
         command = ["fdp", "-T", "png", "-o", filename]
 
