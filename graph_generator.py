@@ -15,6 +15,7 @@ def debug(msg):
 class Graph:
     def __init__(self):
         self.nodes = set()
+        self.edges = set()
         self.graph_options = {}
         self.node_options = {}
 
@@ -27,7 +28,8 @@ class Graph:
 
 
     def graphviz(self):
-        content = '\n'.join(node.graphviz() for node in self.nodes)
+        content = '\n'.join(node.graphviz() for node in self.nodes) + '\n' \
+                  '\n'.join(edge.graphviz() for edge in self.edges)
 
         graph_option_tuples = [(k, v) for k, v in self.graph_options.items()]
         graph_option_strs = ['{0}="{1}"'.format(k, v) for k, v in graph_option_tuples]
@@ -44,32 +46,32 @@ class Graph:
 class Node:
     def __init__(self, name):
         self.name = name
-        self.links = set()
         self.options = {}
 
     def __str__(self):
-        return '{0} ({1})'.format(self.name, len(self.links))
+        return '<Node: {0}>'.format(self.name)
 
     def __hash__(self):
         return hash(self.name)
 
-    def link(self, node):
-        self.links.add(node)
+    def graphviz(self):
+        option_tuples = [(k, v) for k, v in self.options.items()]
+        option_strs = ['{0}="{1}"'.format(k, v) for k, v in option_tuples]
+
+        return '{0} [{1}]'.format(self.name, ','.join(option_strs))
+
+
+class Edge:
+    def __init__(self, n1, n2):
+        self._n1 = n1
+        self._n2 = n2
+        self.options = {}
 
     def graphviz(self):
-        def links_generator():
-            option_tuples = [(k, v) for k, v in self.options.items()]
-            option_strs = ['{0}="{1}"'.format(k, v) for k, v in option_tuples]
+        edge_color = rgb_average(self._n1.options['fillcolor'], self._n2.options['fillcolor'])
+        edge_options = 'color = "{}"'.format(edge_color)
+        return '{0} -- {1} [{2}]'.format(self._n1.name, self._n2.name, edge_options)
 
-            yield '{0} [{1}]'.format(self.name, ','.join(option_strs))
-
-            for linked_node in self.links:
-                edge_color = rgb_average(self.options['fillcolor'], linked_node.options['fillcolor'])
-                edge_options = 'color = "{}"'.format(edge_color)
-
-                yield '{0} -- {1} [{2}]'.format(self.name, linked_node.name, edge_options)
-
-        return '\n'.join(list(links_generator()))
 
 def cfg(name, config):
     def parse_config_file(fname):
@@ -114,14 +116,15 @@ def try_to_choose_another(seq, not_this):
             if trial != not_this:
                 return trial
 
-def make_intragroup_links(nodes, config):
+def make_intragroup_links(nodes, graph, config):
     for node in nodes:
         number_of_links = int(cfg('group.intralinks_per_node', config))
         for i in range(number_of_links):
             linked_node = try_to_choose_another(nodes, node)
-            node.link(linked_node)
+            edge = Edge(node, linked_node)
+            graph.edges.add(edge)
 
-def make_intergroup_links(groups, config):
+def make_intergroup_links(groups, graph, config):
     for group in groups:
         for i in range(cfg('group.nodes_with_extralinks', config)):
             node = random.choice(group)
@@ -129,7 +132,8 @@ def make_intergroup_links(groups, config):
             for i in range(number_of_links):
                 other_group = try_to_choose_another(groups, group)
                 linked_node = random.choice(other_group)
-                node.link(linked_node)
+                edge = Edge(node, linked_node)
+                graph.edges.add(edge)
 
 def make_node(name, group_index, config):
     group_options = cfg('groups.{}'.format(group_index), config)
@@ -194,9 +198,9 @@ def make_graph(config):
         groups.append(nodes),
 
     for group in groups:
-        make_intragroup_links(group, config)
+        make_intragroup_links(group, graph, config)
 
-    make_intergroup_links(groups, config)
+    make_intergroup_links(groups, graph, config)
 
 
     return graph
