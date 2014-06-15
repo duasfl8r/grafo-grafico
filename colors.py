@@ -3,12 +3,14 @@ import colorsys
 
 def rgb_average(color1, color2):
     """
-    Retorna a "cor média" entre duas cores, calculada tirando a média de
-    seus valores vermelho, verde e azul.
+    Returns the 'average color' between two colors.
 
-    Argumentos:
-        - color1: string representando uma cor RGB (e.g. "#ff0000")
-        - color2: string representando uma cor RGB (e.g. "#ff0000")
+    The average color is calculated taking average of the two 'red' values,
+    two 'green' values and 'two' blue values of `color1` and `color2`.
+
+    Args:
+        - color1: string, hex representation of a RGB color (e.g. "#ff0000")
+        - color2: string, hex representation of a RGB color (e.g. "#ff0000")
     """
 
     color1_decimals = rgb_hex_to_decimal(color1)

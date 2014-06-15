@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 
 """
-Interface de linha de comando pro grafo-grafico.
+Command-line interface for grafo-grafico.
 
 Usage:
     cli.py [options] generate <configfile>
     cli.py [options] flush
 
 Options:
-    -o <FILE>, --output=<FILE>          salva saída em um arquivo
-    -f <FORMATO>, --format=<FORMATO>      png ou gv [default: gv]
+    -o <FILE>, --output=<FILE>          saves output on a file
+    -f <FORMAT>, --format=<FORMAT>      output format: png or gv [default: gv]
 """
 
 import os
@@ -33,7 +33,7 @@ def output(what, where):
         close_output = lambda _: True
     else:
         output_file = open(where, 'w')
-        close_output = close
+        close_output = lambda f: f.close()
 
     output_file.write(what)
     close_output(output_file)
@@ -49,12 +49,12 @@ def generate(args):
         output(graph.graphviz(), args['--output'])
     elif args['--format'] == 'png':
         if not args['--output']:
-            sys.stderr.write('Por favor, use a opção --output pra definir o arquivo de saída.\n')
+            sys.stderr.write('Please, use the --output option to define the output file.\n')
             exit(-1)
         else:
             graph.save_png(args['--output'])
     else:
-        sys.stderr.write('Formato desconhecido: {0}'.format(args['--format']))
+        sys.stderr.write('Unknown format: {0}'.format(args['--format']))
 
 if __name__ == '__main__':
     args = docopt(__doc__, version=VERSION)

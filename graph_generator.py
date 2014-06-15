@@ -159,9 +159,9 @@ def make_node(name, group_index, config):
 
 def paint_node(node, basecolor):
     """
-    Argumentos:
+    Args:
 
-    - color: tuple em formato HSV: `(hue, saturation, value)`
+    - color: tuple HSV format: `(hue, saturation, value)`
     """
 
     fillcolor = basecolor[::]
