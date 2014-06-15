@@ -117,12 +117,19 @@ def try_to_choose_another(seq, not_this):
             if trial != not_this:
                 return trial
 
+def edge_color(n1, n2, config):
+    color = cfg('edge.color', config) or '#000000'
+    if color == 'average':
+        color = rgb_average(n1.options['fillcolor'], n2.options['fillcolor'])
+    return color
+
 def make_intragroup_links(nodes, graph, config):
     for node in nodes:
         number_of_links = int(cfg('group.intralinks_per_node', config))
         for i in range(number_of_links):
             linked_node = try_to_choose_another(nodes, node)
             edge = Edge(node, linked_node)
+            edge.options['color'] = edge_color(node, linked_node, config)
             graph.edges.add(edge)
 
 def make_intergroup_links(groups, graph, config):
@@ -134,6 +141,7 @@ def make_intergroup_links(groups, graph, config):
                 other_group = try_to_choose_another(groups, group)
                 linked_node = random.choice(other_group)
                 edge = Edge(node, linked_node)
+                edge.options['color'] = edge_color(node, linked_node, config)
                 graph.edges.add(edge)
 
 def make_node(name, group_index, config):
