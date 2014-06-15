@@ -46,7 +46,7 @@ class Graph:
 class Node:
     def __init__(self, name):
         self.name = name
-        self.options = {}
+        self.options = {'fillcolor': '#ffffff'}
 
     def __str__(self):
         return '<Node: {0}>'.format(self.name)
