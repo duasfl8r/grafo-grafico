@@ -18,12 +18,12 @@ CONFIG = {
             # variação de tons.
             'brightness_offset': lambda: random.gauss(0, 0.2),
 
-            'node_diameter': lambda: random.gauss(1, 0.5),
+            'node_diameter': lambda: random.gauss(3, 0.5),
         },
         {
             'basecolor': '#3c3c9c',
             'brightness_offset': lambda: random.gauss(0, 0.2),
-            'node_diameter': lambda: random.gauss(0.2, 0.1),
+            'node_diameter': lambda: random.gauss(2.5, 0.1),
         },
         {
             'basecolor': '#9c3c73',
@@ -33,14 +33,14 @@ CONFIG = {
         {
             'basecolor': '#5a82c8',
             'brightness_offset': lambda: random.gauss(0, 0.2),
-            'node_diameter': lambda: random.gauss(1, 0.2),
+            'node_diameter': lambda: random.gauss(2, 0.2),
         },
     ],
 
     # Opções pra todos os grupos
     'group': {
         # Número de nós pra cada grupo
-        'number_of_nodes': 30,
+        'number_of_nodes': 20,
 
         # Número de nós com links intergrupos
         'nodes_with_extralinks': 4,
@@ -49,7 +49,14 @@ CONFIG = {
         'intralinks_per_node': lambda: max(1, round(random.gauss(15, 3))),
 
         # Número de interlinks -- links pra nós de outro grupo -- de um # nó
-        'extralinks_per_node': lambda: max(1, round(random.gauss(2, 2))),
+        'extralinks_per_node': lambda: max(0, round(random.gauss(0, 2))),
+    },
+
+    # Opções para todos os edges
+    'edge': {
+        # Cor dos links -- cor RGB ou 'average_nodes' pra tirar média entre as
+        # cores dos nós que esse link liga
+        'color': 'average',
     },
 
     # Opções repassadas pro arquivo GV do graphviz
@@ -65,6 +72,8 @@ CONFIG = {
 
             # Cor de fundo, ou 'transparent'
             'bgcolor': 'transparent',
+
+            'size': '10,10'
         },
         'node': {
             # Remover essa opção faz os nós terem só o contorno e as
