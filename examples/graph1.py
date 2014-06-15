@@ -52,6 +52,13 @@ CONFIG = {
         'extralinks_per_node': lambda: max(1, round(random.gauss(2, 2))),
     },
 
+    # Opções para todos os edges
+    'edge': {
+        # Cor dos links -- cor RGB ou 'average_nodes' pra tirar média entre as
+        # cores dos nós que esse link liga
+        'color': 'average',
+    },
+
     # Opções repassadas pro arquivo GV do graphviz
     'graphviz': {
         'graph': {
