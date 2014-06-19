@@ -41,6 +41,7 @@ class Graph:
             content + '\n' + \
         '}'
 
+
 class Node:
     def __init__(self, name):
         self.name = name
@@ -114,21 +115,21 @@ def try_to_choose_another(seq, not_this):
             if trial != not_this:
                 return trial
 
-def make_intragroup_links(nodes, config):
+def make_intragroup_links(nodes, group_config):
     for node in nodes:
-        number_of_links = int(cfg('group.intralinks_per_node', config))
+        number_of_links = int(cfg('intralinks_per_node', group_config))
         for i in range(number_of_links):
             linked_node = try_to_choose_another(nodes, node)
             node.link(linked_node)
 
 def make_intergroup_links(groups, config):
     for group in groups:
-        for i in range(cfg('group.nodes_with_extralinks', config)):
-            node = random.choice(group)
-            number_of_links = int(cfg('group.extralinks_per_node', config))
+        for i in range(cfg('nodes_with_extralinks', group['config'])):
+            node = random.choice(group['nodes'])
+            number_of_links = int(cfg('extralinks_per_node', group['config']))
             for i in range(number_of_links):
                 other_group = try_to_choose_another(groups, group)
-                linked_node = random.choice(other_group)
+                linked_node = random.choice(other_group['nodes'])
                 node.link(linked_node)
 
 def make_node(name, group_index, config):
@@ -181,9 +182,9 @@ def make_graph(config):
     groups = []
 
     for g, group_options in enumerate(cfg('groups', config)):
-        number_of_nodes = cfg('group.number_of_nodes', config)
 
         nodes = []
+        number_of_nodes = cfg('number_of_nodes', group_options)
         for n in range(number_of_nodes):
             name = 'g{0}_n{1}'.format(g, n)
             node = make_node(name, g, config)
@@ -191,10 +192,10 @@ def make_graph(config):
             graph.nodes.add(node)
             nodes.append(node)
 
-        groups.append(nodes),
+        groups.append({'nodes': nodes, 'config': group_options}),
 
     for group in groups:
-        make_intragroup_links(group, config)
+        make_intragroup_links(group['nodes'], group['config'])
 
     make_intergroup_links(groups, config)
 
