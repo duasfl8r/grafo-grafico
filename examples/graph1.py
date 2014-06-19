@@ -18,39 +18,48 @@ CONFIG = {
             # variação de tons.
             'brightness_offset': lambda: random.gauss(0, 0.2),
 
-            'node_diameter': lambda: random.gauss(3, 0.5),
+            'node_diameter': lambda: random.gauss(1, 0.5),
+
+            # Número de nós do grupo
+            'number_of_nodes': 30,
+
+            # Número de intralinks -- links pra nós do mesmo grupo -- de um nó
+            'intralinks_per_node': lambda: max(1, round(random.gauss(15, 3))),
+            # Número de nós com links intergrupos
+            'nodes_with_extralinks': 4,
+
+            # Número de interlinks -- links pra nós de outro grupo -- de um # nó
+            'extralinks_per_node': lambda: max(1, round(random.gauss(2, 2))),
         },
         {
             'basecolor': '#3c3c9c',
             'brightness_offset': lambda: random.gauss(0, 0.2),
-            'node_diameter': lambda: random.gauss(2.5, 0.1),
+            'node_diameter': lambda: random.gauss(0.2, 0.1),
+            'number_of_nodes': 50,
+            'intralinks_per_node': lambda: max(1, round(random.gauss(15, 3))),
+            'nodes_with_extralinks': 4,
+            'extralinks_per_node': lambda: max(1, round(random.gauss(2, 2))),
         },
         {
             'basecolor': '#9c3c73',
             'brightness_offset': lambda: random.gauss(0, 0.2),
             'node_diameter': lambda: random.gauss(3, 1),
+            'number_of_nodes': 15,
+            'intralinks_per_node': lambda: max(1, round(random.gauss(15, 3))),
+            'nodes_with_extralinks': 4,
+            'extralinks_per_node': lambda: max(1, round(random.gauss(2, 2))),
         },
         {
             'basecolor': '#5a82c8',
             'brightness_offset': lambda: random.gauss(0, 0.2),
-            'node_diameter': lambda: random.gauss(2, 0.2),
+            'node_diameter': lambda: random.gauss(1, 0.2),
+            'number_of_nodes': 10,
+            'intralinks_per_node': lambda: max(1, round(random.gauss(15, 3))),
+            'nodes_with_extralinks': 4,
+            'extralinks_per_node': lambda: max(1, round(random.gauss(2, 2))),
         },
     ],
 
-    # Opções pra todos os grupos
-    'group': {
-        # Número de nós pra cada grupo
-        'number_of_nodes': 20,
-
-        # Número de nós com links intergrupos
-        'nodes_with_extralinks': 4,
-
-        # Número de intralinks -- links pra nós do mesmo grupo -- de um # nó
-        'intralinks_per_node': lambda: max(1, round(random.gauss(15, 3))),
-
-        # Número de interlinks -- links pra nós de outro grupo -- de um # nó
-        'extralinks_per_node': lambda: max(0, round(random.gauss(0, 2))),
-    },
 
     # Opções para todos os edges
     'edge': {
@@ -72,8 +81,7 @@ CONFIG = {
 
             # Cor de fundo, ou 'transparent'
             'bgcolor': 'transparent',
-
-            'size': '10,10'
+            'size': '8x6',
         },
         'node': {
             # Remover essa opção faz os nós terem só o contorno e as
