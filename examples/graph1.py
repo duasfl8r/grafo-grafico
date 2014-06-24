@@ -67,33 +67,6 @@ CONFIG = {
         # cores dos nós que esse link liga
         'color': 'average',
     },
-
-    # Opções repassadas pro arquivo GV do graphviz
-    'graphviz': {
-        'graph': {
-            # Não permite que os nós fiquem um por cima dos outros --
-            # torna o resultado final mais bonito,
-            # na *minha* opinião ;-)
-            'overlap': 'false',
-
-            # Impede que as arestas fiquem por cima dos nós
-            'outputorder': 'edgesfirst',
-
-            # Cor de fundo, ou 'transparent'
-            'bgcolor': 'transparent',
-            'size': '8x6',
-        },
-        'node': {
-            # Remover essa opção faz os nós terem só o contorno e as
-            # arestas visíveis -- sem preenchimento.
-            'style': 'filled',
-
-            # Faz as configurações de diâmetro de nó funcionarem -- não
-            # calcula um tamanho 'ótimo' pros nós a partir do tamanho da
-            # tela.
-            'fixedsize': 'true',
-        },
-    },
 }
 
 """

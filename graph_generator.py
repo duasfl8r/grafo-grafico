@@ -5,7 +5,7 @@ import os
 import random
 from subprocess import Popen, PIPE
 
-from settings import LOGFILE, DEFAULT_EDGE_COLOR, BORDER_VALUE_OFFSET
+from settings import LOGFILE, DEFAULT_EDGE_COLOR, BORDER_VALUE_OFFSET, GRAPHVIZ_OPTIONS
 from colors import rgb_to_hsv, hsv_to_rgb, hsv_change_brightness, rgb_average
 
 def debug(msg):
@@ -53,6 +53,7 @@ class Graph:
         self.edges = set()
         self.graph_options = {}
         self.node_options = {}
+        self.edge_options = {}
 
     def save_png(self, filename):
         """
@@ -83,9 +84,13 @@ class Graph:
         node_option_tuples = [(k, v) for k, v in self.node_options.items()]
         node_option_strs = ['node[{0}="{1}"]'.format(k, v) for k, v in node_option_tuples]
 
+        edge_option_tuples = [(k, v) for k, v in self.edge_options.items()]
+        edge_option_strs = ['edge[{0}="{1}"]'.format(k, v) for k, v in edge_option_tuples]
+
         return 'graph G {' + \
             '\n'.join(graph_option_strs) + '\n' + \
-            '\n'.join(node_option_strs) + \
+            '\n'.join(node_option_strs) + '\n' + \
+            '\n'.join(edge_option_strs) + \
             content + '\n' + \
         '}'
 
@@ -332,8 +337,9 @@ def make_graph(config):
         - config: the configuration `dict` (see `cfg`)
     """
     graph = Graph()
-    graph.graph_options.update(cfg('graphviz.graph', config))
-    graph.node_options.update(cfg('graphviz.node', config))
+    graph.graph_options.update(cfg('graph', GRAPHVIZ_OPTIONS))
+    graph.node_options.update(cfg('node', GRAPHVIZ_OPTIONS))
+    graph.edge_options.update(cfg('edge', GRAPHVIZ_OPTIONS))
 
     groups = []
 
