@@ -22,27 +22,40 @@ from graph_generator import make_graph
 
 CONFIG = None
 
-def output(what, where):
+def output(message, filename):
     """
-    Redirects output on `what` or to whatever file or stream
-    `where`points to. If `where` is `None`, redirects it to STDOUT.
+    Redirects output on `message` or to whatever file
+    `filename` points to. If `filename` is `None`, redirects it to STDOUT.
+
+    Arguments:
+
+    - message: a string
+    - filename: a string containing a filename
     """
 
-    if where is None:
+    if filename is None:
         output_file = sys.stdout
         close_output = lambda _: True
     else:
-        output_file = open(where, 'w')
+        output_file = open(filename, 'w')
         close_output = lambda f: f.close()
 
-    output_file.write(what)
+    output_file.write(message)
     close_output(output_file)
 
-def flush(args):
+def flush():
+    """
+    Removes the log file if it exists.
+    """
+
     if os.path.isfile(LOGFILE):
         os.remove(LOGFILE)
 
 def generate(args):
+    """
+    Generates the graph.
+    """
+
     graph = make_graph(CONFIG)
 
     if args['--format'] == 'gv':
@@ -72,4 +85,4 @@ if __name__ == '__main__':
     if args['generate']:
         generate(args)
     elif args['flush']:
-        flush(args)
+        flush()
